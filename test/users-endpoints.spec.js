@@ -3,7 +3,7 @@ const app = require('../src/app');
 const helpers = require('./test-helpers');
 
 // Contains all tests for the users endpoint
-describe('User Endpoints', function () {
+describe('User Endpoints', function() {
   // container for the knex instace
   let db;
 
@@ -29,9 +29,15 @@ describe('User Endpoints', function () {
   describe('POST /api/users', () => {
     // Before each test insert the users into the database
     beforeEach('insert users', () => helpers.seedUsers(db, testUsers));
-    
+
     // Sets all required fields for a user
-    const requiredFields = ['username', 'password', 'first_name', 'last_name', 'email'];
+    const requiredFields = [
+      'username',
+      'password',
+      'first_name',
+      'last_name',
+      'email'
+    ];
 
     // Runs the test for each required field
     requiredFields.forEach(field => {
@@ -46,7 +52,6 @@ describe('User Endpoints', function () {
 
       // Test making sure the response is appropriate when a required field is missing
       it(`responds with 400 required errror when '${field}' is missing`, () => {
-
         // Deletes the current field in the for each
         delete testRegistration[field];
 
@@ -60,8 +65,7 @@ describe('User Endpoints', function () {
     });
 
     // Tests the server responds appropriately when password length isn't long enough
-    it('responds 400 \'Password must be longer than 8 characters\' when empty password', () => {
-
+    it("responds 400 'Password must be longer than 8 characters' when empty password", () => {
       // Creates a fake user registration with a short password
       const shortPasswordUser = {
         username: 'TestDummy',
@@ -80,8 +84,7 @@ describe('User Endpoints', function () {
     });
 
     // Tests the server responds appropriately when the password is too long
-    it('responds 400 \'Password must be less than 72 characters\' when long password', () => {
-      
+    it("responds 400 'Password must be less than 72 characters' when long password", () => {
       // Creates a fake user registration with a long password
       const longPasswordUser = {
         username: 'TestDummy',
@@ -101,7 +104,6 @@ describe('User Endpoints', function () {
 
     // Tests that the registration password doesn't start with spaces
     it('responds 400 error when password starts with spaces', () => {
-
       // Creates a user with a password starting with spaces
       const startSpacePasswordUser = {
         username: 'TestDummy',
@@ -121,7 +123,6 @@ describe('User Endpoints', function () {
 
     // Tests that the registration password doesn't end with spaces
     it('responds 400 error when password ends with spaces', () => {
-      
       // Creates a user with a password ending with spaces
       const endSpacePasswordUser = {
         username: 'TestDummy',
@@ -140,8 +141,7 @@ describe('User Endpoints', function () {
     });
 
     // Tests that the registration password is complex enough
-    it('responds 400 error when the password isn\'t complex enough', () => {
-
+    it("responds 400 error when the password isn't complex enough", () => {
       // Creates a user with a simple password
       const simplePasswordUser = {
         username: 'TestDummy',
@@ -155,13 +155,13 @@ describe('User Endpoints', function () {
         .post('/api/users')
         .send(simplePasswordUser)
         .expect(400, {
-          error: 'Password must contain one upper case, lower case, number, and special character'
+          error:
+            'Password must contain one upper case, lower case, number, and special character'
         });
     });
 
     // Tests that when a duplicate user name is given the server responds appropriately
-    it('responds 400 \'Username already taken\' when user name isn\'t unique', () => {
-      
+    it("responds 400 'Username already taken' when user name isn't unique", () => {
       // Creates a registration with an already taken username
       const duplicateUserName = {
         username: testUser.username,
@@ -181,10 +181,8 @@ describe('User Endpoints', function () {
 
     //Tests when the user registration is valid
     describe('Given a valid user', () => {
-
       // The server responds appropriately when the user sends a valid registration
       it('responds 201 with a serialized user and no password', () => {
-
         // Creates a valid user registration
         const validUser = {
           username: 'TestDummy',
@@ -211,7 +209,6 @@ describe('User Endpoints', function () {
 
       // Tests that the valid user is stored in the database with a bcrypted password
       it('stores the new user in database with bcrypted password', () => {
-
         // Creates a valid user registration
         const validUser = {
           username: 'TestDummy',
@@ -234,7 +231,7 @@ describe('User Endpoints', function () {
                 expect(row.first_name).to.eql(validUser.first_name);
                 expect(row.last_name).to.eql(validUser.last_name);
                 expect(row.email).to.eql(validUser.email);
-                
+
                 return bcrypt.compare(validUser.password, row.password);
               })
               .then(compareMatch => {
@@ -243,5 +240,34 @@ describe('User Endpoints', function () {
           );
       });
     });
+  });
+  //  test for when users submit their initial questionnaire answers
+  describe('POST for /users/initial', () => {
+    const answers = {
+      user_id: 1,
+      age: 'teen',
+      location: 'seattle, wa',
+      nationality: 'american',
+      gender: 'male',
+      collegegraduate: true
+    };
+
+    return supertest(app)
+      .post('/api/users/initial')
+      .send(answers)
+      .expect(res => {
+        db('users_info')
+          .select('*')
+          .where({ id: res.body.id })
+          .first()
+          .then(row => {
+            expect(row.user_id).to.eql(answers.user_id);
+            expect(row.age).to.eql(answers.age);
+            expect(row.location).to.eql(answers.location);
+            expect(row.nationality).to.eql(answers.nationality);
+            expect(row.gender).to.eql(answers.gender);
+            expect(row.collegegraduate).to.eql(answers.collegegraduate);
+          });
+      });
   });
 });

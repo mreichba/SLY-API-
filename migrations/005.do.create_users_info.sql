@@ -1,6 +1,7 @@
-CREATE TABLE "users_info" (
+CREATE TABLE "users_info"
+(
   "id" SERIAL PRIMARY KEY,
-  "age" INTEGER NOT NULL,
+  "birthdate" TEXT NOT NULL,
   "location" TEXT NOT NULL,
   "nationality" TEXT NOT NULL,
   "gender" TEXT NOT NULL,

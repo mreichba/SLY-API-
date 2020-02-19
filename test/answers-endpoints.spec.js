@@ -2,7 +2,7 @@ const app = require('../src/app');
 const helpers = require('./test-helpers');
 
 // Contains tests for all answers endpoints
-describe('Answers Endpoints', function () {
+describe('Answers Endpoints', function() {
 
   // Creates a container for the knex instance at an accessible scope for all tests
   let db;
@@ -31,7 +31,6 @@ describe('Answers Endpoints', function () {
 
   // Contains all tests for the '/answers' route
   describe('GET /api/answers/:question_id', () => {
-    
     // Before each test seed the users, questions, and answers into the database
     beforeEach('insert users, questions, and answers', () => {
       return helpers.seedUsersQuestionsAnswers(
@@ -45,12 +44,14 @@ describe('Answers Endpoints', function () {
 
     // Tests whether the endpoint returns the correct answers from the database
     it('responds with a 200 and the appropriate answers in an array', () => {
-
       // Creates a test question to pull the answers from
       const testQuestion = testQuestions[0];
 
       // Creates the expected array of answers
-      const testQuestionAnswers = helpers.findQuestionAnswers(testQuestion.id, testAnswers);
+      const testQuestionAnswers = helpers.findQuestionAnswers(
+        testQuestion.id,
+        testAnswers
+      );
 
       return supertest(app)
         .get(`/api/answers/${testQuestion.id}`)
