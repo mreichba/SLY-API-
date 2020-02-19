@@ -1,0 +1,2 @@
+ALTER TABLE "answers"
+  ADD COLUMN "answered" INTEGER DEFAULT 0;

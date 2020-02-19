@@ -117,7 +117,34 @@ function makeQuestionAndAnswersArrays() {
     }
   ];
 
-  return [testQuestions, testAnswers];
+  const testUserAnswers = [
+    {
+      id: 1,
+      answer_id: 3,
+      question_id: 1,
+      user_id: 1 
+    },
+    {
+      id: 2,
+      answer_id: 4,
+      question_id: 2,
+      user_id: 1
+    },
+    {
+      id: 3,
+      answer_id: 6,
+      question_id: 2,
+      user_id: 2
+    },
+    {
+      id:3,
+      answer_id: 11,
+      question_id: 3,
+      user_id: 2
+    }
+  ]
+
+  return [testQuestions, testAnswers, testUserAnswers];
 }
 
 // Generates an authorization header usin the users information and the jwt secret
@@ -185,7 +212,7 @@ function seedUsers(db, users) {
 }
 
 // Seeds the questions and answers into the test database
-async function seedUsersQuestionsAnswers(db, users, questions, answers) {
+async function seedUsersQuestionsAnswers(db, users, questions, answers, user_answers) {
   
   //Seeds the users into the database
   await seedUsers(db, users)
@@ -194,6 +221,7 @@ async function seedUsersQuestionsAnswers(db, users, questions, answers) {
   await db.transaction(async trx => {
     await trx.into('questions').insert(questions);
     await trx.into('answers').insert(answers);
+    await trx.into('user_answers').insert(user_answers);
 
     // Sets the schema sequencing for the questions and answers to the appropriate value
     await Promise.all([
@@ -204,6 +232,9 @@ async function seedUsersQuestionsAnswers(db, users, questions, answers) {
       trx.raw(
         'SELECT setval(\'answers_id_seq\', ?)',
         [answers[answers.length - 1].id]
+      ),
+      trx.raw(
+        'SELECT setval(\'user_answers_id_seq\', ?)', [user_answers[user_answers.length - 1].id]
       )
     ]);
   })

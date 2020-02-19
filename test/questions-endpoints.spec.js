@@ -12,7 +12,7 @@ describe('Questions Endpoints', function () {
   const testUser = testUsers[0];
 
   // Creates test questions and answers arrays
-  const [testQuestions, testAnswers] = helpers.makeQuestionAndAnswersArrays();
+  const [testQuestions, testAnswers, testUserAnswers] = helpers.makeQuestionAndAnswersArrays();
 
   // Before all tests creates the knex instance to the database
   before('make knex instance', () => {
@@ -38,7 +38,8 @@ describe('Questions Endpoints', function () {
         db,
         testUsers,
         testQuestions,
-        testAnswers
+        testAnswers,
+        testUserAnswers
       );
     });
 
@@ -61,7 +62,8 @@ describe('Questions Endpoints', function () {
         db,
         testUsers,
         testQuestions,
-        testAnswers
+        testAnswers,
+        testUserAnswers
       );
     });
 
