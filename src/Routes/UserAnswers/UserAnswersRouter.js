@@ -80,7 +80,7 @@ userAnswersRouter
   .get(async (req, res, next) => {
     try {
       // retrieves the answer from the database
-      const userAnswer = await UserAnswersService.getUserAnswer(
+      const [userAnswer] = await UserAnswersService.getUserAnswer(
         req.app.get('db'),
         req.params.question_id,
         req.user.id
@@ -93,3 +93,5 @@ userAnswersRouter
       next(error);
     }
   });
+
+  module.exports = userAnswersRouter;

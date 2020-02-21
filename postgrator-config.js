@@ -5,7 +5,7 @@ module.exports = {
   driver: 'pg',
   connectionString:
     process.env.NODE_ENV === 'test'
-      ? process.env.SLY_TEST
+      ? process.env.TEST_DATABASE_URL
       : process.env.DATABASE_URL,
   ssl: !!process.env.SSL
 };

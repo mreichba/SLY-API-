@@ -2,7 +2,7 @@ const app = require('../src/app');
 const helpers = require('./test-helpers');
 
 // Contains all tests for the user answers endpoints
-describe.skip('User Answers Endpoints', function () {
+describe.only('User Answers Endpoints', function () {
 
   // Creates a container for the knex instance at an accessible scope for all tests
   let db;
@@ -36,6 +36,7 @@ describe.skip('User Answers Endpoints', function () {
     beforeEach('insert users, questions, and answers', () => {
       return helpers.seedUsersQuestionsAnswers(
         db,
+        testUsers,
         testQuestions,
         testAnswers,
         testUserAnswers
@@ -48,8 +49,21 @@ describe.skip('User Answers Endpoints', function () {
       // Creates the test question
       const testQuestion = testQuestions[1];
 
-      // Creates the expected response
-      const expectedUserAnswer = helpers.findUserAnswer(testQuestion.id, testUser.id)
+      // Gets the corret expected user answer
+      const userAnswer = helpers.findUserAnswer(testUserAnswers, testQuestion.id, testUser.id);
+      
+      // Finds the answer corresponding to the user answers answer id
+      const answer = helpers.findAnswer(testAnswers, userAnswer.answer_id);
+
+      return supertest(app)
+        .get(`/api/user_answers/${testQuestion.id}`)
+        .set('Authorization', helpers.makeAuthHeader(testUser))
+        .expect(200)
+        .expect({
+          answer: answer.answer,
+          answered: answer.answered,
+          question_answered: testQuestion.answered
+        });
     }); 
   });
 });

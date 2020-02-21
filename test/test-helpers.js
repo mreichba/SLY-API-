@@ -63,57 +63,68 @@ function makeQuestionAndAnswersArrays() {
     {
       id: 1,
       answer: "Ummmmm...",
-      question_id: 1
+      question_id: 1,
+      answered: 0
     },
     {
       id: 2,
       answer: "I don't know",
-      question_id: 1
+      question_id: 1,
+      answered: 1
     },
     {
       id: 3,
       answer: "31-40 mph",
-      question_id: 1
+      question_id: 1,
+      answered: 33
     },
     {
       id: 4,
       answer: "A pencil",
-      question_id: 2
+      question_id: 2,
+      answered: 5
     },
     {
       id: 5,
       answer: "A computer mouse",
-      question_id: 2
+      question_id: 2,
+      answered: 3
     },
     {
       id: 6,
       answer: "A magic 8 ball",
-      question_id: 2
+      question_id: 2,
+      answered: 6
     },
     {
       id: 7,
       answer: "A puppy",
-      question_id: 2
+      question_id: 2,
+      answered: 5
     },
     {
       id: 8,
       answer: "Family",
-      question_id: 3
+      question_id: 3,
+      answered: 17
     },
     {
       id: 9,
       answer: "Friends",
-      question_id: 3
+      question_id: 3,
+      answered: 12
     },
     {
       id: 10,
       answer: "Love",
-      question_id: 3
+      question_id: 3,
+      answered: 13
     },
     {
       id: 11,
       answer: "42",
-      question_id: 3
+      question_id: 3,
+      answered: 0
     }
   ];
 
@@ -137,7 +148,7 @@ function makeQuestionAndAnswersArrays() {
       user_id: 2
     },
     {
-      id:3,
+      id:4,
       answer_id: 11,
       question_id: 3,
       user_id: 2
@@ -237,7 +248,7 @@ async function seedUsersQuestionsAnswers(db, users, questions, answers, user_ans
         'SELECT setval(\'user_answers_id_seq\', ?)', [user_answers[user_answers.length - 1].id]
       )
     ]);
-  })
+  });
 }
 
 // Paginates an array of questions
@@ -273,6 +284,36 @@ function findQuestionAnswers(qId, ansArr) {
   return newArr;
 }
 
+function findUserAnswer(userAnsArr, question_id,  user_id) {
+
+  // Creates a variable to hold the user answer
+  let userAns;
+  
+  // Loops through the test answers returning the correct user answer
+  for (let i = 0; i < userAnsArr.length; i++) {
+    if (userAnsArr[i].question_id === question_id && userAnsArr[i].user_id === user_id) {
+      userAns = userAnsArr[i];
+    }
+  }
+
+  return userAns;
+}
+
+function findAnswer(ansArr, answer_id) {
+
+  // Creates a variable to hold the required answer
+  let answer;
+
+  // Loops through the answer array setting the answer variable to the answer with matching id
+  for (let i = 0; i < ansArr.length; i++) {
+    if (ansArr[i].id === answer_id) {
+      answer = ansArr[i];
+    }
+  }
+
+  return answer;
+}
+
 module.exports = {
   makeKnexInstance,
   makeUsersArray,
@@ -283,4 +324,6 @@ module.exports = {
   seedUsersQuestionsAnswers,
   paginateQuestions,
   findQuestionAnswers,
+  findUserAnswer,
+  findAnswer
 }

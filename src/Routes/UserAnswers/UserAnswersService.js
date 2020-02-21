@@ -3,9 +3,23 @@ const UserAnswersService = {
   // Gets the user answer to a specific question
   getUserAnswer(db, question_id, user_id) {
     return db('user_answers')
-      .select('*')
-      .where('user_id', user_id)
-      .andWhere('question_id', question_id);
+      .select(
+        'answers.answer',
+        'answers.answered',
+        'questions.answered AS question_answered'
+      )
+      .join(
+        'answers',
+        'answers.id',
+        'user_answers.answer_id'
+      )
+      .join(
+        'questions',
+        'user_answers.question_id',
+        'questions.id'
+      )
+      .where('user_answers.question_id', question_id)
+      .andWhere('user_answers.user_id', user_id);
   },
 
   // Increases the questions answered value by 1
