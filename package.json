@@ -1,7 +1,7 @@
 {
   "name": "mask-sly-api",
   "version": "1.0.0",
-  "description": "Find outhow many people out there are like you.",
+  "description": "Find out how many are like you.",
   "main": "index.js",
   "scripts": {
     "test": "mocha --require test/setup.js",
