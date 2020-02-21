@@ -1,18 +1,15 @@
 // Create the questions service object
 const QuestionsService = {
-
   // Gets all questions from the database
   getQuestions(db) {
-    return db('questions')
-      .select('*');
+    return db('questions').select('*');
   },
 
   // Gets paginated questions
   paginateQuestions(db, page, pSize) {
-    
     // Set the offset for the page
     const offset = pSize * (page - 1);
-    
+
     // Returns all of the questions within the appropriate page
     return db('questions')
       .select('*')
@@ -28,11 +25,11 @@ const QuestionsService = {
       .where({ id });
   },
 
-  // Gets the answers for a specific question
-  getQuestionAnswers(db, question_id) {
-    return db('answers')
+  // Gets the questions for a specific topic
+  getQuestionAnswers(db, topic) {
+    return db('questions')
       .select('*')
-      .where('question_id', question_id );
+      .where('topic', topic);
   }
 };
 
