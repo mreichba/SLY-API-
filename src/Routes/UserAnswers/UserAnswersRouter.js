@@ -19,7 +19,7 @@ userAnswersRouter
   .post(jsonBodyParser, async (req, res, next) => {
     try {
       // Pulls the required data from the request body
-      const { question_id, answer_id, user_id } = req.body;
+      const { question_id, answer_id } = req.body;
 
       // Sets the required data to an object
       const newAnswer = {
@@ -41,32 +41,36 @@ userAnswersRouter
       // Sets the new user answer user_id to the req user
       newAnswer.user_id = req.user.id;
 
-      // Increments the question answered count by 1 each time a user answer is submitted
-      const questionAnswered = await UserAnswersService.increaseQuestionAnswered(
-        req.app.get('db'),
-        question_id
-      );
-
-      // Increments the answer answered count by 1 each time a user answer is submitted
-      const answer = await UserAnswersService.increaseAnswerAnswered(
-        req.app.get('db'),
-        answer_id
-      );
-
       // Inserts the user answer into the database
-      const userAnswer = await UserAnswersService.insertUserAnswer(
+      UserAnswersService.insertUserAnswer(
         req.app.get('db'),
         newAnswer
+      )
+        .then(() => {
+
+          // Increments the question answered count by 1 each time a user answer is submitted
+          UserAnswersService.increaseQuestionAnswered(
+            req.app.get('db'),
+            question_id
+          );
+
+        // Increments the answer answered count by 1 each time a user answer is submitted
+        UserAnswersService.increaseAnswerAnswered(
+          req.app.get('db'),
+          answer_id
+        );
+      });
+ 
+      // Creates the reponse body
+      const [userAnswer] = await UserAnswersService.getUserAnswer(
+        req.app.get('db'),
+        question_id,
+        req.user.id
       );
 
-      // Creates the reponse body
-      let answerResponse = {
-        answer: answer.answer,
-        answered: answer.answered,
-        question_answered: questionAnswered
-      }
-
-      res.send(answerResponse);
+      res.status(201)
+        .location(`/api/user_answers/${userAnswer.id}`)
+        .send(resAnswer);
 
       next();
     } catch (error) {
@@ -77,21 +81,35 @@ userAnswersRouter
 // The route for retrieving a users answer for a specific question
 userAnswersRouter
   .route('/:question_id')
-  .get(async (req, res, next) => {
+  .all(async (req, res, next) => {
     try {
-      // retrieves the answer from the database
-      const [userAnswer] = await UserAnswersService.getUserAnswer(
-        req.app.get('db'),
-        req.params.question_id,
-        req.user.id
-      );
+      // Gets the users answer from the database
+    const [userAnswer] = await UserAnswersService.getUserAnswer(
+      req.app.get('db'),
+      req.params.question_id,
+      req.user.id
+    );
 
-      res.json(userAnswer);
+    // If there is not matching user answer return a 404 NOT FOUND
+    if (!userAnswer) {
+      return res
+        .status(404)
+        .json({
+          error: 'User answer does not exist'
+        });
+    }
 
-      next();
+    // Sets the response user answer value to user answer
+    res.userAnswer = userAnswer;
+
+    next();
     } catch (error) {
       next(error);
     }
+    
+  })
+  .get(async (req, res, next) => {
+      res.json(res.userAnswer);
   });
 
   module.exports = userAnswersRouter;

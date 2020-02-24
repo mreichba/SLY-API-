@@ -4,14 +4,15 @@ const UserAnswersService = {
   getUserAnswer(db, question_id, user_id) {
     return db('user_answers')
       .select(
+        'user_answers.id',
         'answers.answer',
         'answers.answered',
         'questions.answered AS question_answered'
       )
       .join(
         'answers',
-        'answers.id',
-        'user_answers.answer_id'
+        'user_answers.answer_id',
+        'answers.id'
       )
       .join(
         'questions',
@@ -19,25 +20,21 @@ const UserAnswersService = {
         'questions.id'
       )
       .where('user_answers.question_id', question_id)
-      .andWhere('user_answers.user_id', user_id);
+      .where('user_answers.user_id', user_id);
   },
 
   // Increases the questions answered value by 1
   increaseQuestionAnswered(db, question_id) {
-    return db('questions')
+    db('questions')
       .where('id', question_id)
-      .increment('answered', 1)
-      .returning('answered');
+      .increment('answered', 1);
   },
 
+  // Increases the answers answered value by 1
   increaseAnswerAnswered(db, answer_id) {
-    return db('answers')
+    db('answers')
       .where('id', answer_id)
-      .increment('answered', 1)
-      .returning({
-        answer: 'answer',
-        answered: 'answered'
-      });
+      .increment('answered', 1);
   },
 
   // Inserts answer into the database
