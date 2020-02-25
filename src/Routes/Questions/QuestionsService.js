@@ -19,10 +19,17 @@ const QuestionsService = {
 
   // Gets a specific question
   getQuestion(db, id) {
-    return db
-      .from('questions')
+    return db('questions')
       .select('*')
       .where({ id });
+  },
+
+  // Groups all the questions by topic and returns them
+  groupByTopic(db) {
+    return db
+      .distinct()
+      .from('questions')
+      .select('topic');
   },
 
   // Gets the questions for a specific topic

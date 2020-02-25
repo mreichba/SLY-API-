@@ -41,8 +41,24 @@ const AccountService = {
       id: user.id,
       first_name: user.first_name,
       last_name: user.last_name,
-      username: user.username
+      username: user.username,
+      email: user.email
     };
+  },
+  deleteUser(db, user_id) {
+    return db('users')
+      .where({ user_id })
+      .delete();
+  },
+  deleteAnswersOfDeletedUser(db, user_id) {
+    return db('user_answers')
+      .where({ user_id })
+      .delete();
+  },
+  updateAccount(db, id, updatedData) {
+    return db('users')
+      .where({ id })
+      .update(updatedData);
   }
 };
 
