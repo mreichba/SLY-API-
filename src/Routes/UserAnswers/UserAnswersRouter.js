@@ -41,37 +41,38 @@ userAnswersRouter
       // Sets the new user answer user_id to the req user
       newAnswer.user_id = req.user.id;
 
-      // Inserts the user answer into the database
-      UserAnswersService.insertUserAnswer(
+      // Inserts the new answer into the database
+      const newUserAnswer = await UserAnswersService.insertUserAnswer(
         req.app.get('db'),
         newAnswer
-      )
-        .then(() => {
-
-          // Increments the question answered count by 1 each time a user answer is submitted
-          UserAnswersService.increaseQuestionAnswered(
-            req.app.get('db'),
-            question_id
-          );
-
-        // Increments the answer answered count by 1 each time a user answer is submitted
-        UserAnswersService.increaseAnswerAnswered(
-          req.app.get('db'),
-          answer_id
-        );
-      });
- 
-      // Creates the reponse body
-      const [userAnswer] = await UserAnswersService.getUserAnswer(
-        req.app.get('db'),
-        question_id,
-        req.user.id
       );
 
-      res.status(201)
-        .location(`/api/user_answers/${userAnswer.id}`)
-        .send(resAnswer);
+      // Gets the count of how many times the answer has been selected by users
+      const [answerSelected] = await UserAnswersService.getAnswerSelected(
+        req.app.get('db'),
+        newUserAnswer.answer_id
+      );
 
+      // Gets the count of how many times the question has been answered
+      const [questionAnswered] = await UserAnswersService.getQuestionAnswered(
+        req.app.get('db'),
+        newUserAnswer.question_id
+      );
+
+      // Gets the rest of the info required for the response
+      const [userAnswer] = await UserAnswersService.getUserAnswer(
+        req.app.get('db'),
+        newUserAnswer.question_id,
+        req.user.id
+      )
+      
+      res.status(201)
+        .json({
+          answer: userAnswer.answer,
+          selected: Number(answerSelected.count),
+          answered: Number(questionAnswered.count)
+        });
+      
       next();
     } catch (error) {
       next(error)
@@ -83,33 +84,51 @@ userAnswersRouter
   .route('/:question_id')
   .all(async (req, res, next) => {
     try {
+
       // Gets the users answer from the database
-    const [userAnswer] = await UserAnswersService.getUserAnswer(
-      req.app.get('db'),
-      req.params.question_id,
-      req.user.id
-    );
+      const [userAnswer] = await UserAnswersService.getUserAnswer(
+        req.app.get('db'),
+        req.params.question_id,
+        req.user.id
+      );
 
-    // If there is not matching user answer return a 404 NOT FOUND
-    if (!userAnswer) {
-      return res
-        .status(404)
-        .json({
-          error: 'User answer does not exist'
-        });
-    }
 
-    // Sets the response user answer value to user answer
-    res.userAnswer = userAnswer;
+      // If there is not matching user answer return a 404 NOT FOUND
+      if (!userAnswer) {
+        return res
+          .status(404)
+          .json({
+            error: 'User answer does not exist'
+          });
+      }
 
-    next();
+      // Sets the response user answer value to user answer
+      res.userAnswer = userAnswer;
+
+      next();
     } catch (error) {
       next(error);
     }
-    
   })
   .get(async (req, res, next) => {
-      res.json(res.userAnswer);
+
+      // Gets the count of how many times the answer has been selected by users
+      const [answerSelected] = await UserAnswersService.getAnswerSelected(
+        req.app.get('db'),
+        res.userAnswer.answer_id
+      );
+
+      // Gets the count of how many times the question has been answered
+      const [questionAnswered] = await UserAnswersService.getQuestionAnswered(
+        req.app.get('db'),
+        res.userAnswer.question_id
+      );
+
+      res.json({
+        answer: res.userAnswer.answer,
+        selected: Number(answerSelected.count),
+        answered: Number(questionAnswered.count)
+      });
   });
 
   module.exports = userAnswersRouter;

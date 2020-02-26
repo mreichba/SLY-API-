@@ -50,13 +50,14 @@ describe.only('User Answers Endpoints', function () {
       context('Given user answer does not exist', () => {
         
         // Tests the endpoint responds with a 404 NOT FOUND
-        it('responds with 404', () => {
+        it.only('responds with 404', () => {
 
           // Create a fake question id
           const questionId = 999;
 
           return supertest(app)
-            .get(`api/user_ansers/${questionId}`)
+            .get(`api/user_answers/${questionId}`)
+            .set('Authorization', helpers.makeAuthHeader(testUser))
             .expect(404, {
               error: 'User answer does not exist'
             });
@@ -71,6 +72,12 @@ describe.only('User Answers Endpoints', function () {
 
         // Gets the corret expected user answer
         const userAnswer = helpers.findUserAnswer(testUserAnswers, testQuestion.id, testUser.id);
+
+        // Gets the count of how many users have answered the question
+        const questionAnswerCount = testUserAnswers.filter(answer => answer.question_id === userAnswer.question_id).length;
+
+        // Gets the count of how many times the answer has been selected by users
+        const answerSelectedCount = testUserAnswers.filter(answer => answer.answer_id === userAnswer.answer_id).length;
       
         // Finds the answer corresponding to the user answers answer id
         const answer = helpers.findAnswer(testAnswers, userAnswer.answer_id);
@@ -80,10 +87,9 @@ describe.only('User Answers Endpoints', function () {
           .set('Authorization', helpers.makeAuthHeader(testUser))
           .expect(200)
           .expect({
-            id: userAnswer.id,
             answer: answer.answer,
-            answered: answer.answered,
-            question_answered: testQuestion.answered
+            selected: answerSelectedCount,
+            answered: questionAnswerCount
           });
       });
     });
@@ -124,7 +130,7 @@ describe.only('User Answers Endpoints', function () {
       });
 
       // Tests whether the endpoint responds appropriately when the user posts
-      it('creates a user answer, responding with 201 and the users answer, the answered count for that answer, and the answered count for the question', () => {
+      it('creates a user answer, responding with 201 and the users answer, how many other users selected the answer, and and how many users have answered the question', () => {
         
         // Establishes the test question and test answer
         const testQuestion = testQuestions[2];
@@ -136,17 +142,22 @@ describe.only('User Answers Endpoints', function () {
           question_id: testQuestion.id
         };
 
+        // Gets the count of how many users have answered the question
+        const questionAnswerCount = testUserAnswers.filter(answer => answer.question_id === testQuestion.id).length;
+
+        // Gets the count of how many times the answer has been selected by users
+        const answerSelectedCount = testUserAnswers.filter(answer => answer.answer_id === testAnswer.id).length;
+
         return supertest(app)
           .post('/api/user_answers')
           .set('Authorization', helpers.makeAuthHeader(testUser))
           .send(newUserAnswer)
           .expect(201)
           .expect(res => {
-            console.log(res.body);
             expect(res.body.answer).to.eql(testAnswer.answer);
-            expect(res.body.answered).to.eql(testAnswer.answered + 1);
-            expect(res.body.question_answered).to.eql(testQuestion.answered + 1);
-          })
+            expect(res.body.selected).to.eql(answerSelectedCount + 1);
+            expect(res.body.answered).to.eql(questionAnswerCount + 1);
+          });
       }); 
     });
   });

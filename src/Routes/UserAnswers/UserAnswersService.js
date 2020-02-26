@@ -1,40 +1,25 @@
 const UserAnswersService = {
 
   // Gets the user answer to a specific question
-  getUserAnswer(db, question_id, user_id) {
+  getUserAnswer(db, questionId, userId) {
     return db('user_answers')
-      .select(
-        'user_answers.id',
-        'answers.answer',
-        'answers.answered',
-        'questions.answered AS question_answered'
-      )
-      .join(
-        'answers',
-        'user_answers.answer_id',
-        'answers.id'
-      )
-      .join(
-        'questions',
-        'user_answers.question_id',
-        'questions.id'
-      )
-      .where('user_answers.question_id', question_id)
-      .where('user_answers.user_id', user_id);
+      .select('*')
+      .where('question_id', questionId)
+      .where('user_id', userId);
   },
 
   // Increases the questions answered value by 1
-  increaseQuestionAnswered(db, question_id) {
-    db('questions')
-      .where('id', question_id)
-      .increment('answered', 1);
+  getQuestionAnswered(db, question_id) {
+    return db('user_answers')
+      .count('question_id')
+      .where('question_id', question_id);
   },
 
   // Increases the answers answered value by 1
-  increaseAnswerAnswered(db, answer_id) {
-    db('answers')
-      .where('id', answer_id)
-      .increment('answered', 1);
+  getAnswerSelected(db, answer_id) {
+    return db('user_answers')
+      .count('answer_id')
+      .where('answer_id', answer_id);
   },
 
   // Inserts answer into the database

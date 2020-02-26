@@ -1,0 +1,5 @@
+ALTER TABLE questions
+DROP COLUMN IF EXISTS answered;
+
+ALTER TABLE answers
+DROP COLUMN IF EXISTS answered;

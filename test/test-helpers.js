@@ -41,20 +41,17 @@ function makeQuestionAndAnswersArrays() {
     {
       id: 1,
       question: "What is the airspeed velocity of an unlaiden swallow",
-      topic: "history",
-      answered: 34
+      topic: "history"
     },
     {
       id: 2,
       question: "What am I holding in my hand?",
-      topic: "psychic",
-      answered: 19
+      topic: "psychic"
     },
     {
       id: 3,
       question: "What is the meaning of life, the universe and everything?",
-      topic: "philosophy",
-      answered: 42
+      topic: "philosophy"
     },
   ];
 
@@ -63,68 +60,57 @@ function makeQuestionAndAnswersArrays() {
     {
       id: 1,
       answer: "Ummmmm...",
-      question_id: 1,
-      answered: 0
+      question_id: 1
     },
     {
       id: 2,
       answer: "I don't know",
-      question_id: 1,
-      answered: 1
+      question_id: 1
     },
     {
       id: 3,
       answer: "31-40 mph",
-      question_id: 1,
-      answered: 33
+      question_id: 1
     },
     {
       id: 4,
       answer: "A pencil",
-      question_id: 2,
-      answered: 5
+      question_id: 2
     },
     {
       id: 5,
       answer: "A computer mouse",
-      question_id: 2,
-      answered: 3
+      question_id: 2
     },
     {
       id: 6,
       answer: "A magic 8 ball",
-      question_id: 2,
-      answered: 6
+      question_id: 2
     },
     {
       id: 7,
       answer: "A puppy",
-      question_id: 2,
-      answered: 5
+      question_id: 2
     },
     {
       id: 8,
       answer: "Family",
-      question_id: 3,
-      answered: 17
+      question_id: 3
     },
     {
       id: 9,
       answer: "Friends",
-      question_id: 3,
-      answered: 12
+      question_id: 3
     },
     {
       id: 10,
       answer: "Love",
-      question_id: 3,
-      answered: 13
+      question_id: 3
     },
     {
       id: 11,
       answer: "42",
-      question_id: 3,
-      answered: 0
+      question_id: 3
     }
   ];
 
