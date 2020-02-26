@@ -18,7 +18,7 @@ answersRouter.route('/:question_id').get(async (req, res, next) => {
       req.params.question_id
     );
 
-    res.status(200).json(answers);
+    res.json(answers);
 
     next();
   } catch (error) {
@@ -27,6 +27,7 @@ answersRouter.route('/:question_id').get(async (req, res, next) => {
 });
 
 // Route to check if the current logged in user has completed the quiz they're trying to access via the question_id and their user_id
+
 answersRouter.get('/:question_id/:user_id', (req, res) => {
   const { question_id, user_id } = req.params;
 

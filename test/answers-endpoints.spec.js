@@ -3,6 +3,7 @@ const helpers = require('./test-helpers');
 
 // Contains tests for all answers endpoints
 describe('Answers Endpoints', function() {
+
   // Creates a container for the knex instance at an accessible scope for all tests
   let db;
 
@@ -11,7 +12,7 @@ describe('Answers Endpoints', function() {
   const testUser = testUsers[0];
 
   // Destructures the objects from the helpers make question and answers arrays
-  const [testQuestions, testAnswers] = helpers.makeQuestionAndAnswersArrays();
+  const [testQuestions, testAnswers, testUserAnswers] = helpers.makeQuestionAndAnswersArrays();
 
   // Before all tests creates the knex instance to the database
   before('make knex instance', () => {
@@ -36,7 +37,8 @@ describe('Answers Endpoints', function() {
         db,
         testUsers,
         testQuestions,
-        testAnswers
+        testAnswers,
+        testUserAnswers
       );
     });
 
