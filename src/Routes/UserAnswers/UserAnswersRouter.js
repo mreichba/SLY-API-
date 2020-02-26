@@ -82,53 +82,32 @@ userAnswersRouter
 // The route for retrieving a users answer for a specific question
 userAnswersRouter
   .route('/:question_id')
-  .all(async (req, res, next) => {
-    try {
-
-      // Gets the users answer from the database
-      const [userAnswer] = await UserAnswersService.getUserAnswer(
-        req.app.get('db'),
-        req.params.question_id,
-        req.user.id
-      );
-
-
-      // If there is not matching user answer return a 404 NOT FOUND
-      if (!userAnswer) {
-        return res
-          .status(404)
-          .json({
-            error: 'User answer does not exist'
-          });
-      }
-
-      // Sets the response user answer value to user answer
-      res.userAnswer = userAnswer;
-
-      next();
-    } catch (error) {
-      next(error);
-    }
-  })
   .get(async (req, res, next) => {
 
-      // Gets the count of how many times the answer has been selected by users
-      const [answerSelected] = await UserAnswersService.getAnswerSelected(
-        req.app.get('db'),
-        res.userAnswer.answer_id
-      );
+    // Gets the users answer from the database
+    const [userAnswer] = await UserAnswersService.getUserAnswer(
+      req.app.get('db'),
+      req.params.question_id,
+      req.user.id
+    );
 
-      // Gets the count of how many times the question has been answered
-      const [questionAnswered] = await UserAnswersService.getQuestionAnswered(
-        req.app.get('db'),
-        res.userAnswer.question_id
-      );
+    // Gets the count of how many times the answer has been selected by users
+    const [answerSelected] = await UserAnswersService.getAnswerSelected(
+      req.app.get('db'),
+      userAnswer.answer_id
+    );
 
-      res.json({
-        answer: res.userAnswer.answer,
-        selected: Number(answerSelected.count),
-        answered: Number(questionAnswered.count)
-      });
-  });
+    // Gets the count of how many times the question has been answered
+    const [questionAnswered] = await UserAnswersService.getQuestionAnswered(
+      req.app.get('db'),
+      userAnswer.question_id
+    );
+
+    res.json({
+      answer: userAnswer.answer,
+      selected: Number(answerSelected.count),
+      answered: Number(questionAnswered.count)
+    });
+});
 
   module.exports = userAnswersRouter;

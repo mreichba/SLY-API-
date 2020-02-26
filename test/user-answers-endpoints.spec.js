@@ -46,24 +46,6 @@ describe.only('User Answers Endpoints', function () {
     // Contains all tests for the GET user questions endpoint
     describe('GET /api/user_answers/:question_id', () => {
 
-      // In case data does not exist in the tables
-      context('Given user answer does not exist', () => {
-        
-        // Tests the endpoint responds with a 404 NOT FOUND
-        it.only('responds with 404', () => {
-
-          // Create a fake question id
-          const questionId = 999;
-
-          return supertest(app)
-            .get(`api/user_answers/${questionId}`)
-            .set('Authorization', helpers.makeAuthHeader(testUser))
-            .expect(404, {
-              error: 'User answer does not exist'
-            });
-        });
-      });
-
       // Contains the tests for retrieving a specific user answer
       it('responds with a 200 and the expected users answer', () => {
 

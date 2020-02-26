@@ -1,11 +1,21 @@
 const UserAnswersService = {
 
   // Gets the user answer to a specific question
-  getUserAnswer(db, questionId, userId) {
+  getUserAnswer(db, question_id, user_id) {
     return db('user_answers')
-      .select('*')
-      .where('question_id', questionId)
-      .where('user_id', userId);
+      .select(
+        'user_answers.id',
+        'answers.answer',
+        'user_answers.answer_id',
+        'user_answers.question_id'
+      )
+      .join(
+        'answers',
+        'user_answers.answer_id',
+        'answers.id'
+      )
+      .where('user_answers.question_id', question_id)
+      .where('user_answers.user_id', user_id);
   },
 
   // Increases the questions answered value by 1
