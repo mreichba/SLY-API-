@@ -1,22 +1,22 @@
 BEGIN;
 
     INSERT INTO questions
-        (question, topic, answered)
+        (question, topic)
     VALUES
-        ('Do you prefer a busy or calm lifestyle?', 'Lifestyle', 0),
-        ('Do you have pets?', 'Lifestyle', 0),
-        ('Do you live alone?', 'Lifestyle', 0),
-        ('Who do you live with?', 'Lifestyle', 0),
-        ('Are you the oldest, youngest, middle, or only child?', 'Family', 0),
-        ('How many many siblings do you have?', 'Family', 0),
-        ('What is your highest level of education?', 'Education', 0),
-        ('Do you plan on attaining a higher level of education', 'Education', 0),
-        ('Do you prefer indoors or outdoors?', 'Preferences', 0),
-        ('What is your favorite time of day?', 'Preferences', 0),
-        ('What is your preferred method of transportation?', 'Preferences', 0),
-        ('What do you like doing on your vacation?', 'Preferences', 0),
-        ('Do you consider yourself an introvert or extrovert?', 'Personality', 0),
-        ('Do you like to live dangerously or cautiously?', 'Personality', 0);
+        ('Do you prefer a busy or calm lifestyle?', 'Lifestyle'),
+        ('Do you have pets?', 'Lifestyle'),
+        ('Do you live alone?', 'Lifestyle'),
+        ('Who do you live with?', 'Lifestyle'),
+        ('Are you the oldest, youngest, middle, or only child?', 'Family'),
+        ('How many many siblings do you have?', 'Family'),
+        ('What is your highest level of education?', 'Education'),
+        ('Do you plan on attaining a higher level of education', 'Education'),
+        ('Do you prefer indoors or outdoors?', 'Preferences'),
+        ('What is your favorite time of day?', 'Preferences'),
+        ('What is your preferred method of transportation?', 'Preferences'),
+        ('What do you like doing on your vacation?', 'Preferences'),
+        ('Do you consider yourself an introvert or extrovert?', 'Personality'),
+        ('Do you like to live dangerously or cautiously?', 'Personality');
 
     INSERT INTO answers
         (answer, question_id)
@@ -71,7 +71,7 @@ BEGIN;
         ('A little bit of both', 14);
 
     INSERT INTO user_answers
-        (user_answer, question_id, user_id)
+        (answer_id, question_id, user_id)
     VALUES
         (1, 1, 1),
         (4, 2, 1);
