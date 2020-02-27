@@ -89,7 +89,7 @@ accountRouter.patch('/', jsonBodyParser, async (req, res, next) => {
   // checks to see if the request body has any values that need updated or if it was blank
   const numberOfValues = Object.values(updatedData).filter(Boolean).length;
   if (numberOfValues === 0) {
-    return res.status(404).json({
+    return res.status(400).json({
       error: {
         message:
           'Request body must contain either username, name, email, password'
@@ -104,7 +104,7 @@ accountRouter.patch('/', jsonBodyParser, async (req, res, next) => {
       username
     );
     if (hasUserUsername) {
-      return res.status(404).json({
+      return res.status(400).json({
         error: 'Username already taken'
       });
     } else {
@@ -116,7 +116,7 @@ accountRouter.patch('/', jsonBodyParser, async (req, res, next) => {
   if (password) {
     const passwordError = AccountService.validatePassword(password);
     if (passwordError) {
-      return res.status(404).json({
+      return res.status(400).json({
         error: passwordError
       });
     }
