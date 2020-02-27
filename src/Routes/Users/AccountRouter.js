@@ -66,20 +66,19 @@ accountRouter.post('/', jsonBodyParser, async (req, res, next) => {
 });
 
 // Route for users to delete their accounts and answers from the db
-accountRouter.delete('/:user_id', (req, res, next) => {
-  const { user_id } = req.params;
-
+accountRouter.delete('/', (req, res, next) => {
   // deletes the users account from the user table
-  AccountService.deleteUser(req.app.get('db'), user_id)
+  AccountService.deleteUser(req.app.get('db'), req.user.id)
     // deletes the users answers from the user_answers table
-    .then(AccountService.deleteAnswersOfDeletedUser(req.app.get('db'), user_id))
+    .then(
+      AccountService.deleteAnswersOfDeletedUser(req.app.get('db'), req.user.id)
+    )
     .then(res.status(204).end())
     .catch(next);
 });
 
 // Route for updating user account information
-accountRouter.patch('/:user_id', jsonBodyParser, async (req, res, next) => {
-  const { user_id } = req.params;
+accountRouter.patch('/', jsonBodyParser, async (req, res, next) => {
   const { username, first_name, last_name, email, password } = req.body;
   let updatedData = {
     first_name,
@@ -90,7 +89,7 @@ accountRouter.patch('/:user_id', jsonBodyParser, async (req, res, next) => {
   // checks to see if the request body has any values that need updated or if it was blank
   const numberOfValues = Object.values(updatedData).filter(Boolean).length;
   if (numberOfValues === 0) {
-    return res.status(400).json({
+    return res.status(404).json({
       error: {
         message:
           'Request body must contain either username, name, email, password'
@@ -105,7 +104,7 @@ accountRouter.patch('/:user_id', jsonBodyParser, async (req, res, next) => {
       username
     );
     if (hasUserUsername) {
-      return res.status(400).json({
+      return res.status(404).json({
         error: 'Username already taken'
       });
     } else {
@@ -117,7 +116,7 @@ accountRouter.patch('/:user_id', jsonBodyParser, async (req, res, next) => {
   if (password) {
     const passwordError = AccountService.validatePassword(password);
     if (passwordError) {
-      return res.status(400).json({
+      return res.status(404).json({
         error: passwordError
       });
     }
@@ -129,7 +128,7 @@ accountRouter.patch('/:user_id', jsonBodyParser, async (req, res, next) => {
   // then sends the request with the updatedData to the db to be updated
   return AccountService.updateAccount(
     req.app.get('db'),
-    user_id,
+    req.user.id,
     updatedData
   ).then(update => {
     res.status(204).json(AccountService.serializeUser(update));

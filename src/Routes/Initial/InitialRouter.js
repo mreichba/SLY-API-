@@ -18,22 +18,22 @@ initialRouter.post('/', jsonBodyParser, (req, res, next) => {
   } = req.body;
 
   if (!user_id) {
-    return res.status(400).send('User ID required');
+    return res.status(404).send('User ID required');
   }
   if (!birthdate) {
-    return res.status(400).send('Birthdate required');
+    return res.status(404).send('Birthdate required');
   }
   if (!nationality) {
-    return res.status(400).send('Nationality required');
+    return res.status(404).send('Nationality required');
   }
   if (!gender) {
-    return res.status(400).send('Gender required');
+    return res.status(404).send('Gender required');
   }
   if (!college_graduate) {
-    return res.status(400).send('CollegeGraduate required');
+    return res.status(404).send('CollegeGraduate required');
   }
   if (!location) {
-    return res.status(400).send('Location required');
+    return res.status(404).send('Location required');
   }
 
   const initialAnswers = {
@@ -52,12 +52,14 @@ initialRouter.post('/', jsonBodyParser, (req, res, next) => {
     .catch(next);
 });
 
-initialRouter.get('/:user_id', (req, res) => {
-  const { user_id } = req.params;
+initialRouter.get('/', (req, res) => {
+  if (!req.user.id) {
+    res.status(404).json('Sorry your request must contain an authToken');
+  }
 
   // grabs the user_id from the params then searchs the users_info table to see if theyve completed the initial quiz
   // if they have the api sends 'true' back to the user and 'false' if not
-  InitialService.initialStatus(req.app.get('db'), user_id).then(result => {
+  InitialService.initialStatus(req.app.get('db'), req.user.id).then(result => {
     if (result !== undefined) {
       return res.status(200).json(true);
     } else {
