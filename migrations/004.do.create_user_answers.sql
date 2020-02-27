@@ -1,4 +1,5 @@
-CREATE TABLE "user_answers" (
+CREATE TABLE "user_answers"
+(
   "id" SERIAL PRIMARY KEY,
   "answer_id" INTEGER REFERENCES "answers"(id)
     ON DELETE CASCADE NOT NULL,

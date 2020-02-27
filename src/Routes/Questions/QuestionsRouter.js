@@ -50,6 +50,42 @@ questionsRouter.get('/topic/:topic', (req, res) => {
   );
 });
 
+// Used to return a user's completed quiz array
+questionsRouter.get('/quizStatus/:option', (req, res, next) => {
+  let allQuestionIds = [];
+  let completedQuestionIds = [];
+  let incompletedQuestionData = [];
+  let completedQuestionData = [];
+  if (!req.user.id || !req.params.option) {
+    res
+      .status(404)
+      .json('Request must contain a authToken & quizStatus parameter');
+  }
+  QuestionsService.getQuestions(req.app.get('db')).then(questionIds => {
+    return (allQuestionIds = questionIds);
+  });
+  QuestionsService.getCompletedIds(req.app.get('db'), req.user.id)
+    .then(result => {
+      return (completedQuestionIds = result);
+    })
+    .then(() => {
+      allQuestionIds.filter(item1 => {
+        if (completedQuestionIds.includes(item1.id)) {
+          completedQuestionData.push(item1);
+        } else {
+          incompletedQuestionData.push(item1);
+        }
+      });
+    })
+    .then(() => {
+      if (req.params.option == 'completed') {
+        res.status(200).json(completedQuestionData);
+      } else {
+        res.status(200).json(incompletedQuestionData);
+      }
+    });
+});
+
 // Responds when a GET request is made to the '/questions/:page' endpoint
 questionsRouter.route('/:page/:page_size').get(async (req, res, next) => {
   try {

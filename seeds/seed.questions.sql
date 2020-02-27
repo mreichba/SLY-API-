@@ -70,4 +70,10 @@ BEGIN;
         ('No', 14),
         ('A little bit of both', 14);
 
+    INSERT INTO user_answers
+        (user_answer, question_id, user_id)
+    VALUES
+        (1, 1, 1),
+        (4, 2, 1);
+
 END;

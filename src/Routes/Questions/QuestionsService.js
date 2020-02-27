@@ -32,6 +32,13 @@ const QuestionsService = {
       .select('topic');
   },
 
+  // Returns all the User's completed quizzes
+  getCompletedIds(db, user_id) {
+    return db('user_answers')
+      .pluck('question_id')
+      .where({ user_id });
+  },
+
   // Gets the questions for a specific topic
   getQuestionAnswers(db, topic) {
     return db('questions')
