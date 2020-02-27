@@ -8,6 +8,7 @@ const accountRouter = require('./Routes/Users/AccountRouter');
 const questionsRouter = require('./Routes/Questions/QuestionsRouter');
 const answersRouter = require('./Routes/Answers/AnswersRouter');
 const userAnswersRouter = require('./Routes/UserAnswers/UserAnswersRouter');
+const initialRouter = require('./Routes/Initial/InitialRouter');
 
 const { NODE_ENV } = require('./config');
 
@@ -24,6 +25,7 @@ app.use('/api/users', accountRouter);
 app.use('/api/questions', questionsRouter);
 app.use('/api/answers', answersRouter);
 app.use('/api/user_answers', userAnswersRouter);
+app.use('/api/initial', initialRouter);
 
 app.use(function errorHandler(error, req, res, next) {
   let response;

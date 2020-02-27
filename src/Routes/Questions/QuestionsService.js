@@ -35,7 +35,7 @@ const QuestionsService = {
   // Returns all the User's completed quizzes
   getCompletedIds(db, user_id) {
     return db('user_answers')
-      .select('*')
+      .pluck('question_id')
       .where({ user_id });
   },
 

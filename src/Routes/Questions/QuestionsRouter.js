@@ -51,37 +51,38 @@ questionsRouter.get('/topic/:topic', (req, res) => {
 });
 
 // Used to return a user's completed quiz array
-questionsRouter.get('/completed/:user_id', (req, res, next) => {
-  const { user_id } = req.params;
+questionsRouter.get('/quizStatus/:option', (req, res, next) => {
   let allQuestionIds = [];
   let completedQuestionIds = [];
   let incompletedQuestionData = [];
   let completedQuestionData = [];
-
+  if (!req.user.id || !req.params.option) {
+    res
+      .status(404)
+      .json('Request must contain a authToken & quizStatus parameter');
+  }
   QuestionsService.getQuestions(req.app.get('db')).then(questionIds => {
     return (allQuestionIds = questionIds);
   });
-  QuestionsService.getCompletedIds(req.app.get('db'), user_id)
+  QuestionsService.getCompletedIds(req.app.get('db'), req.user.id)
     .then(result => {
       return (completedQuestionIds = result);
     })
     .then(() => {
-      allQuestionIds.forEach(item1 => {
-        completedQuestionIds.forEach(item2 => {
-          if (item1.id !== item2.question_id) {
-            console.log('fail incomplete');
-            incompletedQuestionData.push(item1);
-          } else {
-            console.log('fail complete');
-            completedQuestionData.push(item1);
-          }
-        });
+      allQuestionIds.filter(item1 => {
+        if (completedQuestionIds.includes(item1.id)) {
+          completedQuestionData.push(item1);
+        } else {
+          incompletedQuestionData.push(item1);
+        }
       });
     })
-    .then(() => {})
     .then(() => {
-      console.log(completedQuestionData);
-      console.log(incompletedQuestionData);
+      if (req.params.option == 'completed') {
+        res.status(200).json(completedQuestionData);
+      } else {
+        res.status(200).json(incompletedQuestionData);
+      }
     });
 });
 
