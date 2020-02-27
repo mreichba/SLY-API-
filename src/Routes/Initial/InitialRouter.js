@@ -18,22 +18,22 @@ initialRouter.post('/', jsonBodyParser, (req, res, next) => {
   } = req.body;
 
   if (!user_id) {
-    return res.status(404).send('User ID required');
+    return res.status(400).send('User ID required');
   }
   if (!birthdate) {
-    return res.status(404).send('Birthdate required');
+    return res.status(400).send('Birthdate required');
   }
   if (!nationality) {
-    return res.status(404).send('Nationality required');
+    return res.status(400).send('Nationality required');
   }
   if (!gender) {
-    return res.status(404).send('Gender required');
+    return res.status(400).send('Gender required');
   }
   if (!college_graduate) {
-    return res.status(404).send('CollegeGraduate required');
+    return res.status(400).send('CollegeGraduate required');
   }
   if (!location) {
-    return res.status(404).send('Location required');
+    return res.status(400).send('Location required');
   }
 
   const initialAnswers = {
@@ -54,7 +54,7 @@ initialRouter.post('/', jsonBodyParser, (req, res, next) => {
 
 initialRouter.get('/', (req, res) => {
   if (!req.user.id) {
-    res.status(404).json('Sorry your request must contain an authToken');
+    res.status(400).json('Sorry your request must contain an authToken');
   }
 
   // grabs the user_id from the params then searchs the users_info table to see if theyve completed the initial quiz
