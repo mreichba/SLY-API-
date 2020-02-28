@@ -1,26 +1,116 @@
-# Express Boilerplate!
+# Someone Like You API
 
-This is a boilerplate project used for starting new projects!
+This API Handles all of the data storage, manipulation and retrieval processes for the Someone Like You Client. The database holds user data, handles the user authentication, and breaks down statistical data from all users.
 
-## Set up
+[Client Repo](https://github.com/thinkful-ei-iguana/MASK-SLY-client)
 
-Complete the following steps to start a new project (NEW-PROJECT-NAME):
+**API URL:** 
 
-1. Clone this repository to your local machine `git clone BOILERPLATE-URL NEW-PROJECTS-NAME`
-2. `cd` into the cloned repository
-3. Make a fresh start of the git history for this project with `rm -rf .git && git init`
-4. Install the node dependencies `npm install`
-5. Move the example Environment file to `.env` that will be ignored by git and read by the express server `mv example.env .env`
-6. Edit the contents of the `package.json` to use NEW-PROJECT-NAME instead of `"name": "express-boilerplate",`
+**Tech Stack:** NodeJS, Express, Knex, PostgreSQL, Mocha & Chai
 
-## Scripts
+## **Create User**
 
-Start the application `npm start`
+  The route is responsible for storing new users login information in the database
 
-Start nodemon for the application `npm run dev`
+* **URL**
 
-Run the tests `npm test`
+  /users
 
-## Deploying
+* **Method**
 
-When your new project is ready for deployment, add a new Heroku application with `heroku create`. This will make a new git remote called "heroku" and you can then `npm run deploy` which will push to this remote's master branch.
+  `POST`
+
+* **Data Params**
+
+  To make a successful post request to this endpoint you must include a first name, last name, email, user name, and password in the request body
+
+  **Required** <br />
+  `first_name: 'string'` <br />
+  `last_name: 'string'` <br />
+  `email: 'string'` <br />
+  `username: 'string'` <br />
+  `password: 'string'`
+
+* **Success Response**
+
+  * **Code:** 201 CREATED <br />
+    **Header:** Location: /users/:user_id <br />
+    **Content:**
+    ```javascript
+    {
+      id: integer,
+      username: 'string'
+      password: 'string',
+      first_name: 'string',
+      last_name: 'string',
+      email: 'string'
+    }
+    ```
+
+* **Error Response**
+  
+  Failing to send the correct information in the request to this endpoint there are several error messages you may receive.
+
+  * **Code:** 400 BAD REQUEST <br />
+    **Content** `{ error: 'Missing {field} in request body' }`
+
+  OR
+
+  * **Code:** 400 BAD REQUEST <br />
+    **Content:** `{ error: 'Password must {requirement}' }`
+
+  OR
+
+  * **Code:** 400 BAD REQUEST
+    **Content:** `{ error: 'Username already taken' }`
+
+* **Sample Call**
+
+```javascript
+fetch(`${API_URL}/users`, {
+  method: 'POST',
+  headers: {
+    'content-type': 'application/json'
+  },
+  body: JSON.stringify({
+    first_name: 'Jon',
+    last_name: 'Doe',
+    email: 'fakeEmail@gmail.com',
+    username: 'DoeBoy21',
+    password: 'FaKePaSsW0rD!'
+  })
+})
+```
+
+## **User Autorization**
+
+  Handles the authorization of user credentials sent form the client.
+
+* **URL**
+
+  /auth
+
+* **Method**
+
+  `POST`
+
+* **Data Params**
+
+  A POST request to this endpoint requires username and password to be successful.
+
+  **Required** <br />
+  `username: 'string'` <br />
+  `password: 'string'`
+
+* **Success Response**
+
+  Upon a successful request this endpoint responds with a JWT used to access protected endpoints.
+
+  * **Code:** 200 SUCCESS
+
+* **Error Response**
+
+  If no username or password are sent the request will fail. the request will also if the username and password do not match a user in the database.
+
+  * **Code:** 400 BAD REQUEST <br />
+    **Content:** `{ error: }
