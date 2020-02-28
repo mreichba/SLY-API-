@@ -85,4 +85,71 @@ statsRouter.get('/user/:question_id', (req, res) => {
     });
 });
 
+statsRouter.get('/initial-stats', (req, res) => {
+  let userData;
+  let allUserData;
+  let birthdayMatches;
+  let locationMatches;
+  let nationalityMatches;
+  let genderMatches;
+  let collegeGradMatches;
+  let totalUsers;
+
+  StatsService.getUserData(req.app.get('db'), req.user.id)
+    .then(result => (userData = result[0]))
+    .then(() =>
+      StatsService.getAllUserData(req.app.get('db')).then(result => {
+        allUserData = result;
+        totalUsers = result.length;
+      })
+    )
+    .then(() => {
+      birthdayMatches = allUserData.filter(item => {
+        if (item.birthdate === userData.birthdate) {
+          return item;
+        }
+      });
+    })
+    .then(() => {
+      locationMatches = allUserData.filter(item => {
+        if (item.location === userData.location) {
+          return item;
+        }
+      });
+    })
+    .then(() => {
+      nationalityMatches = allUserData.filter(item => {
+        if (item.nationality === userData.nationality) {
+          return item;
+        }
+      });
+    })
+    .then(() => {
+      genderMatches = allUserData.filter(item => {
+        if (item.gender === userData.gender) {
+          return item;
+        }
+      });
+    })
+    .then(() => {
+      collegeGradMatches = allUserData.filter(item => {
+        if (item.collegeGrad === userData.collegeGrad) {
+          return item;
+        }
+      });
+    })
+    .then(() => {
+      const responseBody = {
+        userData,
+        birthdayMatches: birthdayMatches.length,
+        locationMatches: locationMatches.length,
+        nationalityMatches: nationalityMatches.length,
+        genderMatches: genderMatches.length,
+        collegeGradMatches: collegeGradMatches.length,
+        totalUsers
+      };
+      res.status(200).json(responseBody);
+    });
+});
+
 module.exports = statsRouter;
