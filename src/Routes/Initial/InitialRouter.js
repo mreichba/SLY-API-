@@ -54,7 +54,9 @@ initialRouter.post('/', jsonBodyParser, (req, res, next) => {
 
 initialRouter.get('/', (req, res) => {
   if (!req.user.id) {
-    res.status(400).json('Sorry your request must contain an authToken');
+    res.status(401).json({
+      error: 'Unauthorized request'
+    });
   }
 
   // grabs the user_id from the params then searchs the users_info table to see if theyve completed the initial quiz

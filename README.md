@@ -88,7 +88,7 @@ fetch(`${API_URL}/users`, {
 
 * **URL**
 
-  /auth
+  /auth/token
 
 * **Method**
 
@@ -113,4 +113,127 @@ fetch(`${API_URL}/users`, {
   If no username or password are sent the request will fail. the request will also if the username and password do not match a user in the database.
 
   * **Code:** 400 BAD REQUEST <br />
-    **Content:** `{ error: }
+    **Content:** `{ error: 'Missing {field} in request body'}`
+
+    OR
+
+  * **Code:** 400 BAD REQUEST
+    **Content:** `{ error: 'Incorrect username or password' }`
+
+* **Sample Call:**
+
+  ```javascript
+  fetch(`${API_URL}/auth/token`, {
+    method: 'POST',
+    headers: {
+      'content-type': 'application/json'
+    },
+    body: {
+      username: 'DoeBoy21'
+      password: 'FaKePaSsW0rD!'
+    }
+  }
+  ```
+
+## **Get Initial User Info**
+
+  This endpoint handles the storage of the original user info collected from the form on a users first login to the client.
+
+* **URL**
+
+  /users/initial
+
+* **Method**
+
+  `GET` | `POST`
+
+* **Data Params**
+
+  * /users/initial
+
+    Requires a JWT in order to access this endpoint.
+
+    **Required**
+
+    `JWT={generated on login}`
+
+  * POST /users/initial
+
+    To successfully POST the users initial information to the database all fields must be present in the request body.
+
+    **Required**
+
+    `birthdate: new Date()` <br />
+    `location: 'string'` <br />
+    `nationality: 'string'` <br />
+    `gender: 'string'` <br />
+    `college_graduate: 'string'`
+
+* **Success Response**
+
+  * POST /users/initial
+
+    * **Code:** 201 CREATED <br />
+      **Content:**
+      ```javascript
+      {
+        birthdate: 1986-02-21,
+        location: 'Colorado',
+        nationality: 'USA',
+        gender: 'Male',
+        college_graduate: 'No'
+      }
+      ```
+
+  * GET /users/initial
+
+    * **Code:** 200 OK
+      **Content:** `true`
+
+* **Error Response**
+
+  * /users/initial
+
+    If you do not send a JWT token when making a request to this endpoint an error will result.
+
+    * **Code:** 401 UNAUTHORIZED <br />
+      **Content:** `{ error: 'Unauthorized request' }`
+
+  * POST /users/initial
+
+    Attempting to make a POST request to this endpoint without each of the required fields will result in an error response.
+
+    * **Code:** 400 BAD REQUEST
+      **Content:** `{field} required`
+
+* **Sample Call**
+
+  * POST /users/initial
+
+    ```javascript
+    fetch(`{API_URL}/users/initial`, {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+        'authorization': `bearer {JWT}`
+      },
+      body: JSON.stringify({
+        birthdate: 1986-02-21,
+        location: 'Colorado',
+        nationality: 'USA',
+        gender: 'Male',
+        college_graduate: 'No'
+      })
+    })
+    ```
+
+  * GET /users/initial
+
+    ```javascript
+    fetch(`{API_URL}/users/initial`, {
+      headers: {
+        'authorization': `bearer {JWT}`
+      }
+    })
+    ```
+
