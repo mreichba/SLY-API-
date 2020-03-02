@@ -237,3 +237,85 @@ fetch(`${API_URL}/users`, {
     })
     ```
 
+## Retrieve Questions from the Database
+
+  This endpoint handles the requests for a users answered or unanswered questions.
+
+* **URL**
+
+
+
+
+## Retrieve Answers
+
+  This endpoint is responsible for retrieving the answers to a question the user has selected.
+
+* **URL**
+
+  /answers/:question_id <br />
+  /answers/completedStatus/:question_id
+
+* **Method**
+
+  `GET`
+
+* **URL Params**
+
+  A question id is required to access several of the answers endpoints
+
+  **Required**
+
+  `question_id = integer`
+
+* **Data Params**
+
+  A JWT is required to access all answers endpoints
+
+  **Required**
+
+  `JWT = {generated on login}`
+
+* **Success Response**
+
+  * GET /answers/:question_id
+
+    * **Code:** 200 SUCCESS <br />
+      **Content:** `[ array of answers ]`
+  
+  * GET /answers/completedStatus/:question_id
+
+    * **Code:** 200 SUCCESS
+      **Content:** `true`
+
+* **Error Response**
+
+  * GET /answers/completedStatus/:question_id
+
+    If you attempt to make a request to this endpoint without using the URL params
+
+    * **Code:** 400 BAD REQUEST
+      **Content:** `Sorry your request must contain an authToken and question id parameter`
+
+* **Sample Call**
+
+  * GET /answers/:question_id
+
+    ```javascript
+    fetch(`{API_URL}/amswers/:question_id`, {
+      headers: {
+        'authorization': `bearer {JWT}`
+      }
+    })
+    ```
+
+  * GET /answers/completedStatus/:question_id
+
+    ```javascript
+    fetch(`{API_URL}/answers/completedStatus/:question_id`, {
+      headers: {
+        'authorization': `bearer {JWT}`
+      }
+    })
+    ```
+
+## 

@@ -32,7 +32,7 @@ answersRouter.get('/completedStatus/:question_id', (req, res) => {
 
   if (!req.user.id || !question_id) {
     return res
-      .status(404)
+      .status(400)
       .json(
         'Sorry your request must contain an authToken and question id parameter'
       );
