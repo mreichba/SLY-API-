@@ -133,7 +133,7 @@ statsRouter.get('/initial-stats', (req, res) => {
     })
     .then(() => {
       collegeGradMatches = allUserData.filter(item => {
-        if (item.collegeGrad === userData.collegeGrad) {
+        if (item.college_graduate === userData.college_graduate) {
           return item;
         }
       });
