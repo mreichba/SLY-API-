@@ -6,6 +6,8 @@ This API Handles all of the data storage, manipulation and retrieval processes f
 
 **API URL:** 
 
+  https://infinite-journey-17550.herokuapp.com/api
+
 **Tech Stack:** NodeJS, Express, Knex, PostgreSQL, Mocha & Chai
 
 ## **Create User**
