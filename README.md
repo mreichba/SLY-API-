@@ -498,7 +498,22 @@ fetch(`${API_URL}/users`, {
     * **Code:** 200 SUCCESS <br />
       **Content:**
       ```javascript
-
+        {
+          userData: {
+            id: 1,
+            birthdate: "1986-02-21",
+            location: "Colorado",
+            nationality: "United States",
+            gender: "Male",
+            college_graduate: false,
+            user_id: 1
+          },
+          birthdayMatches: 1,
+          locationMatches: 5,
+          notionalityMatches: 16,
+          genderMatches: 100,
+          totalUsers: 382
+        }
       ```
 
 * **Sample Call**
