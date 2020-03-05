@@ -128,10 +128,10 @@ fetch(`${API_URL}/users`, {
     headers: {
       'content-type': 'application/json'
     },
-    body: {
+    body: JSON.stringify({
       username: 'DoeBoy21'
       password: 'FaKePaSsW0rD!'
-    }
+    })
   }
   ```
 
@@ -211,11 +211,11 @@ fetch(`${API_URL}/users`, {
   * POST /users/initial
 
     ```javascript
-    fetch(`{API_URL}/users/initial`, {
+    fetch(`${API_URL}/users/initial`, {
       method: 'POST',
       headers: {
         'content-type': 'application/json',
-        'authorization': `bearer {JWT}`
+        'authorization': `bearer ${JWT}`
       },
       body: JSON.stringify({
         birthdate: 1986-02-21,
@@ -243,8 +243,51 @@ fetch(`${API_URL}/users`, {
 
 * **URL**
 
+  /questions/quizStatus/:option
 
+* **Method**
 
+  `GET`
+
+* **URL Params**
+
+  For a successful get call to this endpoint an option of either incomplete or completed must be set in the URL
+
+  **Required**
+
+  `option = incomplete`
+
+  OR
+
+  `option = completed`
+
+* **Data Params**
+
+  This is a protected endpoint and requires a JWT for a successful request.
+
+  **Required**
+
+  `JWT = {generated on login}`
+
+* **Success Response**
+
+  * **Code:** 200 SUCCESS <br />
+    **Content:** `[ array of incomplete/completed questions ]`
+
+* **Error Response**
+
+  * **Code** 400 BAD REQUEST
+    **Content:** `Request must contain an authToken & quizStatus parameter`
+
+* **Sample Call**
+
+  ```javascript
+  fetch(`${API_URL}/questions/quizStatus/:option`, {
+    headers: {
+      'authorization': `bearer ${JWT}`
+    }
+  })
+  ```
 
 ## Retrieve Answers
 
@@ -318,4 +361,161 @@ fetch(`${API_URL}/users`, {
     })
     ```
 
-## 
+## Posting a User's Answer
+
+  This endpoint handles the storing of user's answers in the database.
+
+* **URL**
+
+  /user_answers
+
+* **Method**
+
+  `POST`
+
+* **Data Params**
+
+  For a successful request to this endpoint you must include all required fields and a JWT.
+
+  **Required**
+
+  `question_id = integer` <br />
+  `answer_id = integer` <br />
+  `JWT = { generatd on login }`
+
+* **Success Response**
+
+  * **Code:** 201 CREATED <br />
+    **Content:**
+    ```javascript
+    {
+      answer: 'Family`,
+      selected: 12,
+      answered: 89
+    }
+    ```
+
+* **Error Response**
+
+  * **Code:** 400 BAD REQUEST
+    **Content:** `{ error: Missing '{key}' in request body }`
+
+* **Sample Call**
+
+  ```javascript
+  fetch(`${API_URL}/user_answers`, {
+    method: 'POST',
+    headers: {
+      'content-type': 'application/json',
+      'authorization': `bearer ${JWT}`
+    },
+    body: JSON.stringify({
+      question_id: 1,
+      answer_id: 3
+    })
+  })
+  ```
+
+## Retrieve Statistics from the Database
+
+  This endpoint is responsible for retrieving the statistics from the database both for the initial form users fill out as well as any specific question the user answers.
+
+* **URL**
+
+  /stats/user/:question_id <br />
+  /stats/initial-stats
+
+* **Method**
+
+  `GET`
+
+* **URL Params**
+
+  In order for a successful request of stats on a specific question the :question_id is required in the URL.
+
+  **Required**
+
+  `question_id = integer`
+
+* **Data Params**
+
+  This is a protected endpoint and requires a JWT in the request.
+
+  **Required**
+
+  `JWT = { generated on login }`
+
+* **Success Response**
+
+  * /stats/user/:question_id
+
+    * **Code:** 200 SUCCESS <br />
+      **Content:**
+      ```javascript
+      {
+        question: 'Do you prefer a busy or calm lifestyle?',
+        totalUserAnswers: 12,
+        answerOptions: 3,
+        userAnswer: 'Busy',
+        mostCommonUserAnswer: 'Calm',
+        matchingAnswers: [
+          {
+            id: 1,
+            answer_id: 1,
+            question_id: 1,
+            user_id: 1
+          },
+          {
+            id: 29,
+            answer_id: 1,
+            question_id: 1,
+            user_id: 3
+          },
+          {
+            id: 71,
+            answer_id: 1,
+            question_id: 1,
+            user_id: 6
+          },
+          {
+            id: 101,
+            answer_id: 1,
+            question_id: 1,
+            user_id: 9
+          },
+          {
+            id: 143,
+            answer_id: 1,
+            question_id: 1,
+            user_id: 12
+          }
+        ]
+      }
+      ```
+
+  * /stats/initial-stats
+
+    * **Code:** 200 SUCCESS <br />
+      **Content:**
+      ```javascript
+
+      ```
+
+* **Sample Call**
+
+  * /stats/user/:question_id
+  ```javascript
+  fetch(`${API_URL}/stats/user/:question_id`, {
+    headers: {
+      'authorization': `bearer ${JWT}`
+    }
+  })
+  ```
+
+  * /stats/initial-stats
+  ```javascript
+  fetch(`${API_URL}/stats/initial-stats`, {
+    headers: {
+      'authorization': `bearer ${JWT}`
+    }
+  })

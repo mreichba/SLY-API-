@@ -22,7 +22,7 @@ questionsRouter.route('/').get(async (req, res, next) => {
   }
 });
 
-// Responds with the specific question and its answer selections
+// Responds with the specific question matching the id
 questionsRouter.get('/:question_id', (req, res) => {
   const { question_id } = req.params;
 
@@ -31,6 +31,7 @@ questionsRouter.get('/:question_id', (req, res) => {
     res.status(200).json(question);
   });
 });
+
 
 // Responds when a GET request is made to the '/questions/topic' endpoint
 questionsRouter.get('/topic', (req, res) => {
@@ -58,8 +59,8 @@ questionsRouter.get('/quizStatus/:option', (req, res, next) => {
   let completedQuestionData = [];
   if (!req.user.id || !req.params.option) {
     res
-      .status(404)
-      .json('Request must contain a authToken & quizStatus parameter');
+      .status(400)
+      .json('Request must contain an authToken & quizStatus parameter');
   }
   QuestionsService.getQuestions(req.app.get('db')).then(questionIds => {
     return (allQuestionIds = questionIds);
