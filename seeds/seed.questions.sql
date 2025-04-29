@@ -1,5 +1,9 @@
 BEGIN;
 
+    TRUNCATE TABLE answers RESTART IDENTITY CASCADE;
+    TRUNCATE TABLE questions RESTART IDENTITY CASCADE;
+    TRUNCATE TABLE users RESTART IDENTITY CASCADE;
+
     INSERT INTO questions
         (question, topic)
     VALUES
@@ -69,11 +73,5 @@ BEGIN;
         ('Cautiously', 14),
         ('Dangerously', 14),
         ('A little bit of both', 14);
-
-    INSERT INTO user_answers
-        (answer_id, question_id, user_id)
-    VALUES
-        (1, 1, 1),
-        (4, 2, 1);
 
 END;
