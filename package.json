@@ -10,6 +10,8 @@
     "migrate": "postgrator --config postgrator-config.js",
     "migrate:test": "env NODE_ENV=test npm run migrate",
     "migrate:production": "env SSL=true DATABASE_URL=$(heroku config:get DATABASE_URL) npm run migrate",
+    "seed": "node seeds/seed.js",
+    "seed:test": "NODE_ENV=test node seeds/seed.js",
     "predeploy": "npm audit && npm run migrate:production",
     "deploy": "git push heroku master"
   },
@@ -22,19 +24,19 @@
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
-    "dotenv": "^8.2.0",
-    "express": "^4.17.1",
-    "helmet": "^3.21.2",
-    "jsonwebtoken": "^8.5.1",
-    "knex": "^0.20.9",
-    "morgan": "^1.9.1",
-    "pg": "^7.18.1",
+    "dotenv": "^16.5.0",
+    "express": "^4.21.2",
+    "helmet": "^7.2.0",
+    "jsonwebtoken": "^9.0.2",
+    "knex": "^2.5.1",
+    "morgan": "^1.10.0",
+    "pg": "^8.15.5",
     "postgrator-cli": "^3.3.0"
   },
   "devDependencies": {
-    "chai": "^4.2.0",
-    "mocha": "^6.2.2",
-    "nodemon": "^2.0.1",
-    "supertest": "^4.0.2"
+    "chai": "^4.5.0",
+    "mocha": "^10.8.2",
+    "nodemon": "^3.1.10",
+    "supertest": "^6.3.4"
   }
 }
